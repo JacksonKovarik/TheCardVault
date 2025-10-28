@@ -1,7 +1,24 @@
 body {
-    background-color: #f8f9fa;
-    padding-top: 54px;
+  background-color: #f8f9fa;
+  padding-top: 54px;
 }
 
-:root { --footer-h: 65px; } /* adjust if your footer is taller/shorter */
-main { padding-bottom: var(--footer-h); }
+:root {
+  --footer-h: 65px;
+} /* adjust if your footer is taller/shorter */
+main {
+  padding-bottom: var(--footer-h);
+}
+
+/* Styles for the landing page */
+.carousel-control-next-icon {
+  filter: invert(1);
+}
+
+.carousel-control-prev-icon {
+  filter: invert(1);
+}
+
+#hero {
+  height: 93vh;
+}
