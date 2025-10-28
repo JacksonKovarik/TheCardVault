@@ -1,0 +1,7 @@
+body {
+    background-color: #f8f9fa;
+    padding-top: 54px;
+}
+
+:root { --footer-h: 65px; } /* adjust if your footer is taller/shorter */
+main { padding-bottom: var(--footer-h); }
