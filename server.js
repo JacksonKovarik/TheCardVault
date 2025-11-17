@@ -8,11 +8,7 @@ app.use(express.static("public"));
 app.use(bodyParser.json());
 
 const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "postgres",
-  password: "postgres",
-  port: 5432,
+  connectionString: process.env.DB_CONN,
 });
 
 app.get("/api/cards", (req, res) => {
