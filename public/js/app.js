@@ -251,10 +251,16 @@ function createCardElement(listing) {
     return col;
 }
 
-function deleteListing(id) {
+async function deleteListing(id) {
     if (confirm("Are you sure you want to delete this listing?")) {
-        listings = listings.filter((l) => l.id !== id);
-        localStorage.setItem("sportCardListings", JSON.stringify(listings));
+        await fetch("/api/cards", {
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+        },
+        method: "DELETE",
+        body: JSON.stringify({ id }),
+        });
         loadListings();
     }
 }
