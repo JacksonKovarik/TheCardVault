@@ -48,11 +48,56 @@ function openListingModal() {
 async function handleCreateListing(e) {
     e.preventDefault();
     let newListing;
-    if (currentCategory === "sports") {
-        newListing = {
+    // if (currentCategory === "sports") {
+    //     newListing = {
+    //     category: currentCategory, // ← This assigns the category!
+    //     playerName: document.getElementById("playerName").value,
+    //     sport: document.getElementById("sport").value,
+    //     year: document.getElementById("year").value,
+    //     brand: document.getElementById("brand").value,
+    //     cardNumber: document.getElementById("cardNumber").value,
+    //     condition: document.getElementById("condition").value,
+    //     price: document.getElementById("price").value,
+    //     description: document.getElementById("description").value,
+    //     imageUrl: document.getElementById("imageUrl").value || null,
+    //     };
+
+    //     await fetch("/api/cards/sports", {
+    //     headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //     },
+    //     method: "POST",
+    //     body: JSON.stringify(newListing),
+    //     });
+    // } else if (currentCategory === "tcg") {
+    //     newListing = {
+    //     category: currentCategory, // ← This assigns the category!
+    //     cardName: document.getElementById("cardName").value, //cardname
+    //     tcg: document.getElementById("tcg").value,
+    //     set: document.getElementById("set").value,
+    //     year: document.getElementById("year").value,
+    //     cardNumber: document.getElementById("cardNumber").value,
+    //     condition: document.getElementById("condition").value,
+    //     price: document.getElementById("price").value,
+    //     description: document.getElementById("description").value,
+    //     imageUrl: document.getElementById("imageUrl").value || null,
+    //     };
+
+    //     await fetch("/api/cards/tcgs", {
+    //     headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "application/json",
+    //     },
+    //     method: "POST",
+    //     body: JSON.stringify(newListing),
+    //     });
+    // }
+
+    newListing = {
         category: currentCategory, // ← This assigns the category!
-        playerName: document.getElementById("playerName").value,
-        sport: document.getElementById("sport").value,
+        cardName: document.getElementById("cardName").value,
+        type: document.getElementById("type").value,
         year: document.getElementById("year").value,
         brand: document.getElementById("brand").value,
         cardNumber: document.getElementById("cardNumber").value,
@@ -62,7 +107,7 @@ async function handleCreateListing(e) {
         imageUrl: document.getElementById("imageUrl").value || null,
         };
 
-        await fetch("/api/cards/sports", {
+        await fetch("/api/cards", {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
@@ -70,29 +115,6 @@ async function handleCreateListing(e) {
         method: "POST",
         body: JSON.stringify(newListing),
         });
-    } else if (currentCategory === "tcg") {
-        newListing = {
-        category: currentCategory, // ← This assigns the category!
-        cardName: document.getElementById("cardName").value, //cardname
-        tcg: document.getElementById("tcg").value,
-        set: document.getElementById("set").value,
-        year: document.getElementById("year").value,
-        cardNumber: document.getElementById("cardNumber").value,
-        condition: document.getElementById("condition").value,
-        price: document.getElementById("price").value,
-        description: document.getElementById("description").value,
-        imageUrl: document.getElementById("imageUrl").value || null,
-        };
-
-        await fetch("/api/cards/tcgs", {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(newListing),
-        });
-    }
 
     bootstrapModal.hide();
     document.getElementById("listingForm").reset();
@@ -148,44 +170,70 @@ function loadListings(filters = {}) {
 function createCardElement(listing) {
     const col = document.createElement("div");
     col.className = "col";
-    if (listing.category === "tcg") {
-        const imageHtml = listing.imageUrl
+    // if (listing.category === "tcg") {
+    //     const imageHtml = listing.imageUrl
+    //     ? `<img src="${listing.imageUrl}" class="card-img-top" alt="${listing.cardname}" style="height: 200px; object-fit: cover;">`
+    //     : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.cardname}</div>`;
+
+
+    //     col.innerHTML = `
+    //             <div class="card playcard h-100 shadow-sm">
+    //                 ${imageHtml}
+    //                 <div class="card-body">
+    //                     <h5 class="card-title">${listing.cardname}</h5>
+    //                     <p class="card-text text-muted mb-1">${listing.year} ${listing.set}</p>
+    //                     <p class="card-text text-muted mb-1">${listing.tcg}${listing.cardnumber ? " • #" + listing.cardnumber : ""}</p>
+    //                     <p class="mb-2"><span class="badge bg-success">${listing.condition}</span></p>
+    //                     <h4 class="text-success fw-bold">$${listing.price}</h4>
+    //                     ${
+    //                     listing.description
+    //                         ? `<p class="card-text">${listing.description}</p>`
+    //                         : ""
+    //                     }
+    //                 </div>
+    //                 <div class="card-footer bg-white border-top-0">
+    //                     <button class="btn btn-danger w-100" onclick="deleteListing(${listing.id})">Delete</button>
+    //                 </div>
+    //             </div>
+    //         `;
+    // } else if (listing.category === "sports") {
+    //     const imageHtml = listing.imageUrl
+    //     ? `<img src="${listing.imageUrl}" class="card-img-top" alt="${listing.playername}" style="height: 200px; object-fit: cover;">`
+    //     : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.playername}</div>`;
+
+    //     col.innerHTML = `
+    //             <div class="card playcard h-100 shadow-sm">
+    //                 ${imageHtml}
+    //                 <div class="card-body">
+    //                     <h5 class="card-title">${listing.playername}</h5>
+    //                     <p class="card-text text-muted mb-1">${listing.year} ${listing.brand}</p>
+    //                     <p class="card-text text-muted mb-1">${listing.sport}${listing.cardnumber ? " • #" + listing.cardnumber : ""}</p>
+    //                     <p class="mb-2"><span class="badge bg-success">${listing.condition}</span></p>
+    //                     <h4 class="text-success fw-bold">$${listing.price}</h4>
+    //                     ${
+    //                     listing.description
+    //                         ? `<p class="card-text">${listing.description}</p>`
+    //                         : ""
+    //                     }
+    //                 </div>
+    //                 <div class="card-footer bg-white border-top-0">
+    //                     <button class="btn btn-danger w-100" onclick="deleteListing(${listing.id})">Delete</button>
+    //                 </div>
+    //             </div>
+    //         `;
+    // } 
+
+    const imageHtml = listing.imageUrl
         ? `<img src="${listing.imageUrl}" class="card-img-top" alt="${listing.cardname}" style="height: 200px; object-fit: cover;">`
         : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.cardname}</div>`;
 
-
         col.innerHTML = `
-                <div class="card h-100 shadow-sm">
+                <div class="card playcard h-100 shadow-sm">
                     ${imageHtml}
                     <div class="card-body">
                         <h5 class="card-title">${listing.cardname}</h5>
-                        <p class="card-text text-muted mb-1">${listing.year} ${listing.set}</p>
-                        <p class="card-text text-muted mb-1">${listing.tcg}${listing.cardnumber ? " • #" + listing.cardnumber : ""}</p>
-                        <p class="mb-2"><span class="badge bg-success">${listing.condition}</span></p>
-                        <h4 class="text-success fw-bold">$${listing.price}</h4>
-                        ${
-                        listing.description
-                            ? `<p class="card-text">${listing.description}</p>`
-                            : ""
-                        }
-                    </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <button class="btn btn-danger w-100" onclick="deleteListing(${listing.id})">Delete</button>
-                    </div>
-                </div>
-            `;
-    } else if (listing.category === "sports") {
-        const imageHtml = listing.imageUrl
-        ? `<img src="${listing.imageUrl}" class="card-img-top" alt="${listing.playername}" style="height: 200px; object-fit: cover;">`
-        : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.playername}</div>`;
-
-        col.innerHTML = `
-                <div class="card h-100 shadow-sm">
-                    ${imageHtml}
-                    <div class="card-body">
-                        <h5 class="card-title">${listing.playername}</h5>
                         <p class="card-text text-muted mb-1">${listing.year} ${listing.brand}</p>
-                        <p class="card-text text-muted mb-1">${listing.sport}${listing.cardnumber ? " • #" + listing.cardnumber : ""}</p>
+                        <p class="card-text text-muted mb-1">${listing.type}${listing.cardnumber ? " • #" + listing.cardnumber : ""}</p>
                         <p class="mb-2"><span class="badge bg-success">${listing.condition}</span></p>
                         <h4 class="text-success fw-bold">$${listing.price}</h4>
                         ${
@@ -199,7 +247,6 @@ function createCardElement(listing) {
                     </div>
                 </div>
             `;
-    } 
 
     return col;
 }
