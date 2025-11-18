@@ -243,7 +243,7 @@ function createCardElement(listing) {
                         }
                     </div>
                     <div class="card-footer bg-white border-top-0">
-                        <button class="btn btn-danger w-100" onclick="deleteListing(${listing.id})">Delete</button>
+                        <button class="btn btn-danger w-100" onclick="deleteListing(${listing})">Delete</button>
                     </div>
                 </div>
             `;
@@ -251,7 +251,7 @@ function createCardElement(listing) {
     return col;
 }
 
-async function deleteListing(id) {
+async function deleteListing(listing) {
     if (confirm("Are you sure you want to delete this listing?")) {
         await fetch("/api/cards", {
         headers: {
@@ -259,7 +259,7 @@ async function deleteListing(id) {
             "Content-Type": "application/json",
         },
         method: "DELETE",
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ listing }),
         });
         loadListings();
     }
