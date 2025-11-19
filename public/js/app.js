@@ -1,4 +1,4 @@
-let listings = []; // JSON.parse(localStorage.getItem('sportCardListings')) || [];
+let listings = [];
 
 async function fetchListings() {
     const request = await fetch("/api/cards");
@@ -132,32 +132,32 @@ function loadListings(filters = {}) {
 
         // Home shows all cards, other pages filter by category
         if (currentCategory === "home") {
-        filteredListings = [...listings];
+            filteredListings = [...listings];
         } else {
-        filteredListings = listings.filter((l) => l.category === currentCategory);
+            filteredListings = listings.filter((l) => l.category === currentCategory);
         }
 
         if (filters.sport) {
-        filteredListings = filteredListings.filter(
-            (l) => l.sport === filters.sport
-        );
+            filteredListings = filteredListings.filter(
+                (l) => l.sport === filters.sport
+            );
         }
         if (filters.year) {
-        filteredListings = filteredListings.filter(
-            (l) => l.year === filters.year
-        );
+            filteredListings = filteredListings.filter(
+                (l) => l.year === filters.year
+            );
         }
         if (filters.condition) {
-        filteredListings = filteredListings.filter(
-            (l) => l.condition === filters.condition
-        );
+            filteredListings = filteredListings.filter(
+                (l) => l.condition === filters.condition
+            );
         }
 
         loadingSpinner.style.display = "none";
 
         if (filteredListings.length === 0) {
-        emptyState.style.display = "block";
-        return;
+            emptyState.style.display = "block";
+            return;
         }
 
         filteredListings.forEach((listing) => {
@@ -228,7 +228,7 @@ function createCardElement(listing) {
         : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.cardname}</div>`;
 
         col.innerHTML = `
-                <div class="card playcard h-100 shadow-sm">
+                <div class="card h-100 shadow-sm">
                     ${imageHtml}
                     <div class="card-body">
                         <h5 class="card-title">${listing.cardname}</h5>
@@ -243,7 +243,7 @@ function createCardElement(listing) {
                         }
                     </div>
                     <div class="card-footer bg-white border-top-0">
-                        <button class="btn btn-danger w-100" onclick="deleteListing(${listing})">Delete</button>
+                        <button class="btn btn-danger w-100" onclick="deleteListing(${listing.id})">Delete</button>
                     </div>
                 </div>
             `;
@@ -251,15 +251,15 @@ function createCardElement(listing) {
     return col;
 }
 
-async function deleteListing(listing) {
+async function deleteListing(id) {
     if (confirm("Are you sure you want to delete this listing?")) {
         await fetch("/api/cards", {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        method: "DELETE",
-        body: JSON.stringify({ listing }),
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "DELETE",
+            body: JSON.stringify({id}),
         });
         loadListings();
     }
