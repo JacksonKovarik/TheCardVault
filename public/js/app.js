@@ -142,11 +142,26 @@ async function loadListings(filters = {}) {
             );
         }
 
-        const byId = new Map();
+        const byKey = new Map();
+
         for (const l of baseListings) {
-            if (!byId.has(l.id)) byId.set(l.id, l);
+        const key = [
+            l.category ?? "",
+            l.cardname ?? "",
+            l.type ?? "",
+            l.year ?? "",
+            l.brand ?? "",
+            l.cardnumber ?? "",
+            l.condition ?? "",
+            l.price ?? ""
+        ].join("|");
+
+        if (!byKey.has(key)) {
+            byKey.set(key, l);
         }
-        let filteredListings = Array.from(byId.values());
+        }
+
+        let filteredListings = Array.from(byKey.values());
 
         if (filters.type) {
             filteredListings = filteredListings.filter(
