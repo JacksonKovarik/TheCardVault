@@ -125,13 +125,15 @@ async function handleCreateListing(e) {
     loadListings();
 }
 
-function loadListings(filters = {}) {
+async function loadListings(filters = {}) {
     loadingSpinner.style.display = "block";
     listingsGrid.innerHTML = "";
     emptyState.style.display = "none";
 
-    fetchListings();
-    setTimeout(() => {
+    try {
+        // wait for data from the server
+        await fetchListings();
+
         let filteredListings;
 
         // Home shows all cards, other pages filter by category
@@ -141,24 +143,31 @@ function loadListings(filters = {}) {
             filteredListings = listings.filter((l) => l.category === currentCategory);
         }
 
+        // type (sport / TCG / etc.)
         if (filters.type) {
             filteredListings = filteredListings.filter(
                 (l) => l.type === filters.type
             );
         }
+
+        // year
         if (filters.year) {
             filteredListings = filteredListings.filter(
                 (l) => l.year === filters.year
             );
         }
+
+        // condition
         if (filters.condition) {
             filteredListings = filteredListings.filter(
                 (l) => l.condition === filters.condition
             );
         }
+
+        // search term (partial, case-insensitive, across all fields)
         if (filters.searchTerm) {
             const term = filters.searchTerm.toLowerCase();
-            filteredListings = filteredListingsListings.filter((listing) =>
+            filteredListings = filteredListings.filter((listing) =>
                 Object.values(listing).some((value) => {
                     if (value === null || value === undefined) return false;
                     return String(value).toLowerCase().includes(term);
@@ -166,18 +175,22 @@ function loadListings(filters = {}) {
             );
         }
 
-        loadingSpinner.style.display = "none";
-
         if (filteredListings.length === 0) {
             emptyState.style.display = "block";
             return;
         }
 
         filteredListings.forEach((listing) => {
-        const cardElement = createCardElement(listing);
-        listingsGrid.appendChild(cardElement);
+            const cardElement = createCardElement(listing);
+            listingsGrid.appendChild(cardElement);
         });
-    }, 300);
+    } catch (err) {
+        console.error("Error while loading listings:", err);
+        emptyState.style.display = "block";
+    } finally {
+        // ALWAYS hide the spinner, even if something blows up
+        loadingSpinner.style.display = "none";
+    }
 }
 
 function createCardElement(listing) {
