@@ -17,11 +17,11 @@ app.get("/api/cards", (req, res) => {
 
     pool.query(sql, (err, result) => {
         if (err) {
-        console.error("Error executing query", err.stack);
-        res.status(500).json({ error: "Internal Server Error" });
+            console.error("Error executing query", err.stack);
+            res.status(500).json({ error: "Internal Server Error" });
         } else {
-        console.log("Query successful, sending response");
-        res.status(200).json(result.rows);
+            console.log("Query successful, sending response\n");
+            res.status(200).json(result.rows);
         }
     });
 });
@@ -47,7 +47,7 @@ app.post("/api/cards", (req, res) => {
             console.error("Error executing query", err.stack);
             res.status(500).json({ error: "Internal Server Error" });
         } else {
-            console.log("Query successful, sending response");
+            console.log("Query successful, sending response\n");
             res.status(200).json(result.rows);
         }
     });
@@ -63,8 +63,67 @@ app.delete("/api/cards", (req, res) => {
             console.error("Error executing query", err.stack);
             res.status(500).json({ error: "Internal Server Error" });
         } else {
-            console.log("Query successful, sending response");
+            console.log("Query successful, sending response\n");
             res.status(200).json(result.rows);
+        }
+    });
+});
+
+
+app.post("/api/users/sign-up", (req, res) => {
+    console.log("Received sign-up request");
+    const email = [
+        req.body.email
+    ]
+    const sql1 =
+        "SELECT * FROM users WHERE email = $1;";
+
+    pool.query(sql1, email, (err, result) => {
+        if (err) {
+            console.error("Error executing query", err.stack);
+            res.status(500).json({ error: "Internal Server Error" });
+        } else if (result.rows && result.rows.length > 0) {
+            res.status(409).json({ error: "User already exists" });
+        } else {
+            const data = [
+                req.body.username,
+                req.body.email,
+                req.body.pwd
+            ];
+            const sql2 = "INSERT INTO users (username, email, pwd, createdat) VALUES ($1, $2, $3, Now())";
+            pool.query(sql2, data, (err, result) => {
+                if (err) {
+                    console.error("Error executing query", err.stack);
+                    res.status(500).json({ error: "Internal Server Error" });
+                } else {
+                    console.log("Query successful, sending response\n");
+                    res.status(200).json(result.rows);
+                }
+            });
+            
+        }
+    });
+});
+
+app.post("/api/users/login", (req, res) => {
+    console.log("Received login request");
+    const email = [
+        req.body.email,
+    ];
+    const sql =
+        "SELECT pwd,username FROM users WHERE email = $1";
+
+    pool.query(sql, email, (err, result) => {
+        if (err) {
+            console.error("Error executing query", err.stack);
+            res.status(500).json({ error: "Internal Server Error" });
+        } else if (!result.rows || result.rows.length === 0) {
+            res.status(404).json({ error: "User not found" });
+        } else if (result.rows[0].pwd !== req.body.password) {
+            res.status(401).json({ error: "Invalid password" });
+        } else {
+            console.log("Query successful, sending response\n");
+            res.status(200).json(result.rows[0].username);
         }
     });
 });

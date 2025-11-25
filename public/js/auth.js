@@ -126,55 +126,65 @@ class AuthManager {
     }
 
     async login(email, password) {
-        const { data, error } = await supabaseClient.auth.signInWithPassword({
-            email,
-            password,
-        });
-
-        if (error) {
-            throw new Error(error.message);
+        let newUser = {
+            email: email,
+            password: password,
         }
 
-        this.setUser(data.user);
-        this.closeModal();
+        const request = await fetch('/api/users/login', {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(newUser),
+        });
+
+        const response = await request.json();
+
+        if (response.error) {
+            throw new Error(response.error);
+        } else {
+            console.log("User logged in successfully ");
+            newUser = { ...newUser, username: response };
+            this.setUser(newUser);
+            this.closeModal();
+        }
     }
 
     async signup(email, password, displayName) {
-        const { data, error } = await supabaseClient.auth.signUp({
-            email,
-            password,
-            options: {
-                data: {
-                    display_name: displayName || email.split('@')[0]
-                }
-            }
-        });
-
-        if (error) {
-            throw new Error(error.message);
+        const newUser = {
+            email: email,
+            pwd: password,
+            username: displayName || email.split('@')[0]
         }
 
-        if (data.user) {
-            await supabaseClient
-                .from('user_profiles')
-                .insert([
-                    {
-                        id: data.user.id,
-                        email: data.user.email,
-                        display_name: displayName || email.split('@')[0]
-                    }
-                ]);
-        }
+        const request = await fetch("/api/users/sign-up", {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            method: "POST",
+            body: JSON.stringify(newUser),
+        })
 
-        this.setUser(data.user);
+        const response = await request.json();
+
+        if (response.error) {
+            throw new Error(response.error);
+        } 
+        console.log("User created successfully " + response);
+
+        this.setUser(newUser);
         this.closeModal();
     }
 
-    async logout() {
-        await supabaseClient.auth.signOut();
-        this.currentUser = null;
-        localStorage.removeItem('user');
-        this.updateUI();
+    logout() {
+        if (confirm("Are you sure you want to log out?")) {
+            this.currentUser = null;
+            localStorage.removeItem('user');
+            this.updateUI();
+        }
     }
 
     setUser(user) {
