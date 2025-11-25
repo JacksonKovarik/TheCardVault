@@ -133,53 +133,37 @@ async function loadListings(filters = {}) {
     try {
         await fetchListings();
 
-        let baseListings;
+        console.log("All listings from server:", listings);
 
-        if (currentCategory === "home") {
-            baseListings = [...listings];
-        } else {
-            baseListings = listings.filter((l) => l.category === currentCategory);
+        // 1) Start from the full set
+        let filteredListings = [...listings];
+
+        // 2) Restrict by page (home / sports / tcg)
+        if (currentCategory !== "home") {
+            filteredListings = filteredListings.filter(
+                (l) => l.category === currentCategory
+            );
         }
 
-        const byKey = new Map();
-
-        for (const l of baseListings) {
-        const key = [
-            l.cardname ?? "",
-            l.type ?? "",
-            l.year ?? "",
-            l.brand ?? "",
-            l.cardnumber ?? ""
-        ].join("|");
-
-        const existing = byKey.get(key);
-
-        if (!existing) {
-            byKey.set(key, l);
-        } else {
-            if (l.createdat && existing.createdat && l.createdat > existing.createdat) {
-                byKey.set(key, l);
-            }
-        }
-        }
-
-        let filteredListings = Array.from(byKey.values());
-
+        // 3) Apply filters
         if (filters.type) {
             filteredListings = filteredListings.filter(
                 (l) => l.type === filters.type
             );
         }
+
         if (filters.year) {
             filteredListings = filteredListings.filter(
                 (l) => l.year === filters.year
             );
         }
+
         if (filters.condition) {
             filteredListings = filteredListings.filter(
                 (l) => l.condition === filters.condition
             );
         }
+
         if (filters.searchTerm) {
             const term = filters.searchTerm.toLowerCase();
             filteredListings = filteredListings.filter((listing) =>
@@ -189,6 +173,16 @@ async function loadListings(filters = {}) {
                 })
             );
         }
+
+        console.log(
+            "Category:",
+            currentCategory,
+            "Filters:",
+            filters,
+            "Final count:",
+            filteredListings.length,
+            filteredListings
+        );
 
         if (filteredListings.length === 0) {
             emptyState.style.display = "block";
