@@ -25,6 +25,10 @@ let bootstrapModal;
 function init() {
     bootstrapModal = new bootstrap.Modal(listingModal);
     setupEventListeners();
+    const searchInput = document.getElementById("searchInput");
+    if (searchInput) {
+        searchInput.addEventListener("input", () => handleFilter());
+    }
     loadListings();
 }
 
@@ -137,9 +141,9 @@ function loadListings(filters = {}) {
             filteredListings = listings.filter((l) => l.category === currentCategory);
         }
 
-        if (filters.sport) {
+        if (filters.type) {
             filteredListings = filteredListings.filter(
-                (l) => l.sport === filters.sport
+                (l) => l.type === filters.type
             );
         }
         if (filters.year) {
@@ -150,6 +154,15 @@ function loadListings(filters = {}) {
         if (filters.condition) {
             filteredListings = filteredListings.filter(
                 (l) => l.condition === filters.condition
+            );
+        }
+        if (filters.searchTerm) {
+            const term = filters.searchTerm.toLowerCase();
+            filteredListings = filteredListingsListings.filter((listing) =>
+                Object.values(listing).some((value) => {
+                    if (value === null || value === undefined) return false;
+                    return String(value).toLowerCase().includes(term);
+                })
             );
         }
 
@@ -267,11 +280,12 @@ async function deleteListing(id) {
 
 function handleFilter() {
     const filters = {
-        sport: document.getElementById("sportFilter").value,
+        type: document.getElementById("typeFilter").value,
         year: document.getElementById("yearFilter").value
-        ? parseInt(document.getElementById("yearFilter").value)
-        : null,
+            ? parseInt(document.getElementById("yearFilter").value)
+            : null,
         condition: document.getElementById("conditionFilter").value,
+        searchTerm: document.getElementById("searchInput")?.value.trim() || ""
     };
 
     const cleanFilters = Object.fromEntries(
@@ -282,10 +296,19 @@ function handleFilter() {
 }
 
 function clearFilters() {
-    document.getElementById("sportFilter").value = "";
-    document.getElementById("yearFilter").value = "";
-    document.getElementById("conditionFilter").value = "";
-    loadListings();
+  const typeSelect = document.getElementById("typeFilter");
+  if (typeSelect) typeSelect.value = "";
+
+  const yearInput = document.getElementById("yearFilter");
+  if (yearInput) yearInput.value = "";
+
+  const conditionSelect = document.getElementById("conditionFilter");
+  if (conditionSelect) conditionSelect.value = "";
+
+  const searchInput = document.getElementById("searchInput");
+  if (searchInput) searchInput.value = "";
+
+  loadListings();
 }
 
 window.deleteListing = deleteListing;

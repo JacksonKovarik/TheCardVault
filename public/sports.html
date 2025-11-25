@@ -43,49 +43,50 @@
       <section class="card mb-4">
         <div class="card-body">
           <h5 class="card-title">Filter Cards</h5>
+          <!-- Row 1: Wide search bar -->
           <div class="row g-3">
-            <div class="col-md-3">
-              <select id="sportFilter" class="form-select">
-                <option value="">All Sports</option>
-                <option value="Basketball">Basketball</option>
-                <option value="Baseball">Baseball</option>
-                <option value="Football">Football</option>
-                <option value="Hockey">Hockey</option>
-                <option value="Soccer">Soccer</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <input
-                type="number"
-                id="yearFilter"
-                class="form-control"
-                placeholder="Year"
-                min="1900"
-                max="2024"
-              />
-            </div>
-            <div class="col-md-3">
-              <select id="conditionFilter" class="form-select">
-                <option value="">All Conditions</option>
-                <option value="Mint">Mint</option>
-                <option value="Near Mint">Near Mint</option>
-                <option value="Excellent">Excellent</option>
-                <option value="Good">Good</option>
-                <option value="Fair">Fair</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <button id="filterBtn" class="btn btn-primary w-100">
-                Apply Filters
-              </button>
-            </div>
+              <div class="col-12">
+                  <input
+                      type="text"
+                      id="searchInput"
+                      class="form-control"
+                      placeholder="Search by name, brand, set..."
+                  >
+              </div>
           </div>
-          <div class="row mt-2">
-            <div class="col-md-3">
-              <button id="clearFilterBtn" class="btn btn-secondary w-100">
-                Clear Filters
-              </button>
-            </div>
+
+          <!-- Row 2: Filter dropdowns -->
+          <div class="row mt-1 g-3">
+              <div class="col-md-3">
+                  <select id="typeFilter" class="form-select">
+                      <option value="">All Sports</option>
+                      <option value="Basketball">Basketball</option>
+                      <option value="Baseball">Baseball</option>
+                      <option value="Football">Football</option>
+                      <option value="Hockey">Hockey</option>
+                      <option value="Soccer">Soccer</option>
+                  </select>
+              </div>
+
+              <div class="col-md-3">
+                  <input type="number" id="yearFilter" class="form-control" placeholder="Year" min="1900" max="2024">
+              </div>
+
+              <div class="col-md-3">
+                  <select id="conditionFilter" class="form-select">
+                      <option value="">All Conditions</option>
+                      <option value="Mint">Mint</option>
+                      <option value="Near Mint">Near Mint</option>
+                      <option value="Excellent">Excellent</option>
+                      <option value="Good">Good</option>
+                      <option value="Fair">Fair</option>
+                  </select>
+              </div>
+
+              <div class="col-md-3 d-flex justify-content-end gap-2">
+                  <button id="filterBtn" class="btn btn-primary flex-fill">Apply</button>
+                  <button id="clearFilterBtn" class="btn btn-secondary flex-fill">Clear</button>
+              </div>
           </div>
         </div>
       </section>
