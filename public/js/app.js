@@ -131,40 +131,38 @@ async function loadListings(filters = {}) {
     emptyState.style.display = "none";
 
     try {
-        // wait for data from the server
         await fetchListings();
 
-        let filteredListings;
-
-        // Home shows all cards, other pages filter by category
+        let baseListings;
         if (currentCategory === "home") {
-            filteredListings = [...listings];
+            baseListings = [...listings];
         } else {
-            filteredListings = listings.filter((l) => l.category === currentCategory);
+            baseListings = listings.filter(
+                (l) => l.category === currentCategory
+            );
         }
 
-        // type (sport / TCG / etc.)
+        const byId = new Map();
+        for (const l of baseListings) {
+            if (!byId.has(l.id)) byId.set(l.id, l);
+        }
+        let filteredListings = Array.from(byId.values());
+
         if (filters.type) {
             filteredListings = filteredListings.filter(
                 (l) => l.type === filters.type
             );
         }
-
-        // year
         if (filters.year) {
             filteredListings = filteredListings.filter(
                 (l) => l.year === filters.year
             );
         }
-
-        // condition
         if (filters.condition) {
             filteredListings = filteredListings.filter(
                 (l) => l.condition === filters.condition
             );
         }
-
-        // search term (partial, case-insensitive, across all fields)
         if (filters.searchTerm) {
             const term = filters.searchTerm.toLowerCase();
             filteredListings = filteredListings.filter((listing) =>
@@ -188,7 +186,6 @@ async function loadListings(filters = {}) {
         console.error("Error while loading listings:", err);
         emptyState.style.display = "block";
     } finally {
-        // ALWAYS hide the spinner, even if something blows up
         loadingSpinner.style.display = "none";
     }
 }
