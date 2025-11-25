@@ -134,30 +134,32 @@ async function loadListings(filters = {}) {
         await fetchListings();
 
         let baseListings;
+
         if (currentCategory === "home") {
             baseListings = [...listings];
         } else {
-            baseListings = listings.filter(
-                (l) => l.category === currentCategory
-            );
+            baseListings = listings.filter((l) => l.category === currentCategory);
         }
 
         const byKey = new Map();
 
         for (const l of baseListings) {
         const key = [
-            l.category ?? "",
             l.cardname ?? "",
             l.type ?? "",
             l.year ?? "",
             l.brand ?? "",
-            l.cardnumber ?? "",
-            l.condition ?? "",
-            l.price ?? ""
+            l.cardnumber ?? ""
         ].join("|");
 
-        if (!byKey.has(key)) {
+        const existing = byKey.get(key);
+
+        if (!existing) {
             byKey.set(key, l);
+        } else {
+            if (l.createdat && existing.createdat && l.createdat > existing.createdat) {
+                byKey.set(key, l);
+            }
         }
         }
 
