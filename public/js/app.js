@@ -135,17 +135,14 @@ async function loadListings(filters = {}) {
 
         console.log("All listings from server:", listings);
 
-        // 1) Start from the full set
         let filteredListings = [...listings];
 
-        // 2) Restrict by page (home / sports / tcg)
         if (currentCategory !== "home") {
             filteredListings = filteredListings.filter(
                 (l) => l.category === currentCategory
             );
         }
 
-        // 3) Apply filters
         if (filters.type) {
             filteredListings = filteredListings.filter(
                 (l) => l.type === filters.type
@@ -173,16 +170,6 @@ async function loadListings(filters = {}) {
                 })
             );
         }
-
-        console.log(
-            "Category:",
-            currentCategory,
-            "Filters:",
-            filters,
-            "Final count:",
-            filteredListings.length,
-            filteredListings
-        );
 
         if (filteredListings.length === 0) {
             emptyState.style.display = "block";
