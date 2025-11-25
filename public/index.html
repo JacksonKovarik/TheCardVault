@@ -8,16 +8,26 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
-    <nav class="navbar navbar-dark bg-success fixed-top">
-        <div class="container">
-            <span class="navbar-brand mb-0 h1">The Card Vault</span>
-            <div class="d-flex align-items-center gap-2">
-                <a class="btn btn-outline-light mx-2 bg-white text-dark" href="./index.html">Home</a>
-                <a class="btn btn-outline-light mx-2" href="./sports.html">Sports</a>
-                <a class="btn btn-outline-light mx-2" href="./tcg.html">TCGs</a>
 
-                <button id="authBtn" class="btn btn-outline-light mx-2">Login / Sign Up</button>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success fixed-top">
+        <div class="container-fluid ">
+            <a class="navbar-brand" href="#">The Card Vault</a>
+            <div class="vr bg-white" style="width: 1px; height: 40px; position: absolute; left: 154px"></div>
 
+            <button class="navbar-toggler me-2" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./sports.html">Sports</a></li>
+                    <li class="nav-item"><a class="nav-link" href="./tcg.html">TCGs</a></li>
+                </ul>
+
+                <button id="authBtn" class="btn btn-outline-light">Login</button>
                 <div id="userInfo" class="d-none">
                     <div class="d-flex align-items-center gap-2">
                         <div class="user-avatar" id="userAvatar">U</div>
