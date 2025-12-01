@@ -51,54 +51,8 @@ function openListingModal() {
 
 async function handleCreateListing(e) {
     e.preventDefault();
-    let newListing;
-    // if (currentCategory === "sports") {
-    //     newListing = {
-    //     category: currentCategory, // ← This assigns the category!
-    //     playerName: document.getElementById("playerName").value,
-    //     sport: document.getElementById("sport").value,
-    //     year: document.getElementById("year").value,
-    //     brand: document.getElementById("brand").value,
-    //     cardNumber: document.getElementById("cardNumber").value,
-    //     condition: document.getElementById("condition").value,
-    //     price: document.getElementById("price").value,
-    //     description: document.getElementById("description").value,
-    //     imageUrl: document.getElementById("imageUrl").value || null,
-    //     };
 
-    //     await fetch("/api/cards/sports", {
-    //     headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json",
-    //     },
-    //     method: "POST",
-    //     body: JSON.stringify(newListing),
-    //     });
-    // } else if (currentCategory === "tcg") {
-    //     newListing = {
-    //     category: currentCategory, // ← This assigns the category!
-    //     cardName: document.getElementById("cardName").value, //cardname
-    //     tcg: document.getElementById("tcg").value,
-    //     set: document.getElementById("set").value,
-    //     year: document.getElementById("year").value,
-    //     cardNumber: document.getElementById("cardNumber").value,
-    //     condition: document.getElementById("condition").value,
-    //     price: document.getElementById("price").value,
-    //     description: document.getElementById("description").value,
-    //     imageUrl: document.getElementById("imageUrl").value || null,
-    //     };
-
-    //     await fetch("/api/cards/tcgs", {
-    //     headers: {
-    //         Accept: "application/json",
-    //         "Content-Type": "application/json",
-    //     },
-    //     method: "POST",
-    //     body: JSON.stringify(newListing),
-    //     });
-    // }
-
-    newListing = {
+    const newListing = {
         category: currentCategory, // ← This assigns the category!
         cardName: document.getElementById("cardName").value,
         type: document.getElementById("type").value,
@@ -108,17 +62,19 @@ async function handleCreateListing(e) {
         condition: document.getElementById("condition").value,
         price: document.getElementById("price").value,
         description: document.getElementById("description").value,
-        imageUrl: document.getElementById("imageUrl").value || null,
-        };
 
-        await fetch("/api/cards", {
+        // ✅ Don't look for #imageUrl anymore – just ignore the file input for now
+        imageUrl: null,
+    };
+
+    await fetch("/api/cards", {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
         },
         method: "POST",
         body: JSON.stringify(newListing),
-        });
+    });
 
     bootstrapModal.hide();
     document.getElementById("listingForm").reset();
