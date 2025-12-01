@@ -204,15 +204,16 @@
                 ></textarea>
               </div>
               <div class="mb-3">
-                <label for="imageUrl" class="form-label"
-                  >Image URL (optional)</label
-                >
+                <label for="imageFile" class="form-label">
+                  Card Image (optional)
+                </label>
                 <input
-                  type="url"
+                  type="file"
                   class="form-control"
-                  id="imageUrl"
-                  placeholder="https://..."
+                  id="imageFile"
+                  accept="image/jpeg,image/png,image/jpg"
                 />
+                <small class="text-muted">Supported formats: JPG, JPEG, PNG</small>
               </div>
               <button type="submit" class="btn btn-primary w-100">
                 List Card
