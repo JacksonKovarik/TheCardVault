@@ -81,67 +81,68 @@ async function handleCreateListing(e) {
     loadListings();
 }
 
-async function loadListings(filters = {}) {
-    loadingSpinner.style.display = "block";
-    listingsGrid.innerHTML = "";
-    emptyState.style.display = "none";
+function loadListings(filters = {}) {
+  loadingSpinner.style.display = "block";
+  listingsGrid.innerHTML = "";
+  emptyState.style.display = "none";
 
-    try {
-        await fetchListings();
+  fetchListings();
+  setTimeout(() => {
+    let filteredListings;
 
-        console.log("All listings from server:", listings);
-
-        let filteredListings = [...listings];
-
-        if (currentCategory !== "home") {
-            filteredListings = filteredListings.filter(
-                (l) => l.category === currentCategory
-            );
-        }
-
-        if (filters.type) {
-            filteredListings = filteredListings.filter(
-                (l) => l.type === filters.type
-            );
-        }
-
-        if (filters.year) {
-            filteredListings = filteredListings.filter(
-                (l) => l.year === filters.year
-            );
-        }
-
-        if (filters.condition) {
-            filteredListings = filteredListings.filter(
-                (l) => l.condition === filters.condition
-            );
-        }
-
-        if (filters.searchTerm) {
-            const term = filters.searchTerm.toLowerCase();
-            filteredListings = filteredListings.filter((listing) =>
-                Object.values(listing).some((value) => {
-                    if (value === null || value === undefined) return false;
-                    return String(value).toLowerCase().includes(term);
-                })
-            );
-        }
-
-        if (filteredListings.length === 0) {
-            emptyState.style.display = "block";
-            return;
-        }
-
-        filteredListings.forEach((listing) => {
-            const cardElement = createCardElement(listing);
-            listingsGrid.appendChild(cardElement);
-        });
-    } catch (err) {
-        console.error("Error while loading listings:", err);
-        emptyState.style.display = "block";
-    } finally {
-        loadingSpinner.style.display = "none";
+    // Home shows all cards, other pages filter by category
+    if (currentCategory === "home") {
+      filteredListings = [...listings];
+    } else {
+      filteredListings = listings.filter((l) => l.category === currentCategory);
     }
+
+    if (filters.type) {
+      if (currentCategory === "tcg") {
+        filteredListings = filteredListings.filter(
+          (l) => l.brand === filters.type
+        );
+      } else {
+        filteredListings = filteredListings.filter(
+          (l) => l.type === filters.type
+        );
+      }
+    }
+
+    if (filters.year) {
+      filteredListings = filteredListings.filter(
+        (l) => String(l.year) === String(filters.year)
+      );
+    }
+
+    if (filters.condition) {
+      filteredListings = filteredListings.filter(
+        (l) => l.condition === filters.condition
+      );
+    }
+
+    if (filters.searchTerm) {
+      const term = filters.searchTerm.toLowerCase();
+      filteredListings = filteredListings.filter((listing) =>
+        Object.values(listing).some((value) => {
+          if (value === null || value === undefined) return false;
+          return String(value).toLowerCase().includes(term);
+        })
+      );
+    }
+
+    loadingSpinner.style.display = "none";
+
+    if (filteredListings.length === 0) {
+      emptyState.style.display = "block";
+      return;
+    }
+
+    filteredListings.forEach((listing) => {
+      const cardElement = createCardElement(listing);
+      listingsGrid.appendChild(cardElement);
+    });
+  }, 300);
 }
 
 function createCardElement(listing) {
