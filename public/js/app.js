@@ -193,7 +193,7 @@ function createCardElement(listing) {
     col.className = "col";
 
     const imageHtml = listing.imagename
-        ? `<img src="${listing.imagedata}" class="card-img-top" alt="${listing.cardname}" style="height: 200px; object-fit: cover;">`
+        ? `<img src="${listing.imagedata}" class="card-img-top object-fit-contain bg-light" alt="${listing.cardname}" style="height: 200px; object-fit: cover;">`
         : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.cardname}</div>`;
 
         col.innerHTML = `
