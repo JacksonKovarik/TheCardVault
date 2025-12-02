@@ -20,3 +20,7 @@ CREATE TABLE users(
 	pwd VARCHAR(255),
 	createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+ALTER TABLE cards RENAME COLUMN imageurl TO imagename;
+
+ALTER TABLE cards ADD COLUMN imagedata bytea;
