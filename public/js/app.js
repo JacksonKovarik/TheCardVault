@@ -1,7 +1,8 @@
 let listings = [];
 
 async function fetchListings() {
-    const request = await fetch("/api/cards");
+
+    const request = await fetch("/api/cards/load");
     const data = await request.json();
 
     listings = data;
@@ -51,9 +52,11 @@ function openListingModal() {
 
 async function handleCreateListing(e) {
     e.preventDefault();
+    const image = document.getElementById("imageFile").files[0];
 
-    const newListing = {
-        category: currentCategory, // ← This assigns the category!
+    if (image === undefined || image === '' || image === null) {
+      const newListing = {
+        category: currentCategory,
         cardName: document.getElementById("cardName").value,
         type: document.getElementById("type").value,
         year: document.getElementById("year").value,
@@ -62,19 +65,59 @@ async function handleCreateListing(e) {
         condition: document.getElementById("condition").value,
         price: document.getElementById("price").value,
         description: document.getElementById("description").value,
+      };
+      try {
+        const response = await fetch("/api/cards", {
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(newListing),
+        });
+        if (!response.ok) {
+          throw new Error(`Failed to save card data: ${response.statusText}`);
+        }
+      } catch (error) {
+          console.error("Error creating card:", error);
+      }
+    } else {
+      const formData = new FormData();
+      formData.append("imageFile", document.getElementById("imageFile").files[0]);
 
-        // ✅ Don't look for #imageUrl anymore – just ignore the file input for now
-        imageUrl: null,
-    };
+      formData.append("category", currentCategory);
+      formData.append("cardName", document.getElementById("cardName").value);
+      formData.append("type", document.getElementById("type").value);
+      formData.append("year", document.getElementById("year").value);
+      formData.append("brand", document.getElementById("brand").value);
+      formData.append("cardNumber", document.getElementById("cardNumber").value);
+      formData.append("condition", document.getElementById("condition").value);
+      formData.append("price", document.getElementById("price").value);
+      formData.append("description", document.getElementById("description").value);
 
-    await fetch("/api/cards", {
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-        },
-        method: "POST",
-        body: JSON.stringify(newListing),
-    });
+      // formData.append("category", "sports");
+      // formData.append("cardName", "Name");
+      // formData.append("type", "Type");
+      // formData.append("year", "2024");
+      // formData.append("brand", "Brand");
+      // formData.append("cardNumber", "123");
+      // formData.append("condition", "New");
+      // formData.append("price", "9.99");
+      // formData.append("description", "Description");
+
+      try {
+        const uploadResponse = await fetch("/api/cards/upload", {
+            method: "POST",
+            body: formData,
+        });
+
+        if (!uploadResponse.ok) {
+          throw new Error(`Failed to save card data: ${uploadResponse.statusText}`);
+        }
+      } catch (error) {
+          console.error("Error uploading image:", error);
+      }
+    }
 
     bootstrapModal.hide();
     document.getElementById("listingForm").reset();
@@ -148,61 +191,9 @@ function loadListings(filters = {}) {
 function createCardElement(listing) {
     const col = document.createElement("div");
     col.className = "col";
-    // if (listing.category === "tcg") {
-    //     const imageHtml = listing.imageUrl
-    //     ? `<img src="${listing.imageUrl}" class="card-img-top" alt="${listing.cardname}" style="height: 200px; object-fit: cover;">`
-    //     : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.cardname}</div>`;
 
-
-    //     col.innerHTML = `
-    //             <div class="card playcard h-100 shadow-sm">
-    //                 ${imageHtml}
-    //                 <div class="card-body">
-    //                     <h5 class="card-title">${listing.cardname}</h5>
-    //                     <p class="card-text text-muted mb-1">${listing.year} ${listing.set}</p>
-    //                     <p class="card-text text-muted mb-1">${listing.tcg}${listing.cardnumber ? " • #" + listing.cardnumber : ""}</p>
-    //                     <p class="mb-2"><span class="badge bg-success">${listing.condition}</span></p>
-    //                     <h4 class="text-success fw-bold">$${listing.price}</h4>
-    //                     ${
-    //                     listing.description
-    //                         ? `<p class="card-text">${listing.description}</p>`
-    //                         : ""
-    //                     }
-    //                 </div>
-    //                 <div class="card-footer bg-white border-top-0">
-    //                     <button class="btn btn-danger w-100" onclick="deleteListing(${listing.id})">Delete</button>
-    //                 </div>
-    //             </div>
-    //         `;
-    // } else if (listing.category === "sports") {
-    //     const imageHtml = listing.imageUrl
-    //     ? `<img src="${listing.imageUrl}" class="card-img-top" alt="${listing.playername}" style="height: 200px; object-fit: cover;">`
-    //     : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.playername}</div>`;
-
-    //     col.innerHTML = `
-    //             <div class="card playcard h-100 shadow-sm">
-    //                 ${imageHtml}
-    //                 <div class="card-body">
-    //                     <h5 class="card-title">${listing.playername}</h5>
-    //                     <p class="card-text text-muted mb-1">${listing.year} ${listing.brand}</p>
-    //                     <p class="card-text text-muted mb-1">${listing.sport}${listing.cardnumber ? " • #" + listing.cardnumber : ""}</p>
-    //                     <p class="mb-2"><span class="badge bg-success">${listing.condition}</span></p>
-    //                     <h4 class="text-success fw-bold">$${listing.price}</h4>
-    //                     ${
-    //                     listing.description
-    //                         ? `<p class="card-text">${listing.description}</p>`
-    //                         : ""
-    //                     }
-    //                 </div>
-    //                 <div class="card-footer bg-white border-top-0">
-    //                     <button class="btn btn-danger w-100" onclick="deleteListing(${listing.id})">Delete</button>
-    //                 </div>
-    //             </div>
-    //         `;
-    // } 
-
-    const imageHtml = listing.imageUrl
-        ? `<img src="${listing.imageUrl}" class="card-img-top" alt="${listing.cardname}" style="height: 200px; object-fit: cover;">`
+    const imageHtml = listing.imagename
+        ? `<img src="${listing.imagedata}" class="card-img-top" alt="${listing.cardname}" style="height: 200px; object-fit: cover;">`
         : `<div class="card-img-top bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px; font-size: 1.2rem; font-weight: 600;">${listing.cardname}</div>`;
 
         col.innerHTML = `
