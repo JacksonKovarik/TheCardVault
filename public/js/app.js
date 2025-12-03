@@ -1,4 +1,5 @@
 let listings = [];
+let loadTimeoutId = null;
 
 async function fetchListings() {
 
@@ -130,10 +131,14 @@ function loadListings(filters = {}) {
   emptyState.style.display = "none";
 
   fetchListings();
-  setTimeout(() => {
+
+  if (loadTimeoutId) {
+    clearTimeout(loadTimeoutId);
+  }
+
+  loadTimeoutId = setTimeout(() => {
     let filteredListings;
 
-    // Home shows all cards, other pages filter by category
     if (currentCategory === "home") {
       filteredListings = [...listings];
     } else {
@@ -181,6 +186,7 @@ function loadListings(filters = {}) {
       return;
     }
 
+    listingsGrid.innerHTML = "";
     filteredListings.forEach((listing) => {
       const cardElement = createCardElement(listing);
       listingsGrid.appendChild(cardElement);
